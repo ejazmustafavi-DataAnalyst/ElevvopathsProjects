@@ -1,0 +1,65 @@
+# Importing necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+# load dataset and check data
+df = sns.load_dataset('titanic')
+df.head()
+# checking Data types and Data info
+df.info()
+# finding missing values
+df.isnull().sum()
+# remove the column name deck
+df.drop('deck', axis=1, inplace=True)
+# filling embarked column with mode
+df['embarked'].fillna(df['embarked'].mode()[0], inplace=True)
+
+# filling embark_town column with mode
+df['embark_town'].fillna(df['embark_town'].mode()[0], inplace=True)
+
+# filling age column with median
+df['age'].fillna(df['age'].median(), inplace=True)
+# checking missing values again
+df.isnull().sum()
+# save the cleaned data
+df.to_csv('titanic_cleaned.csv', index=False)
+# Summary statistics of numerical columns
+df.describe()
+# barplot for servived vs age with hue as who
+sns.barplot(df, x='survived',y='age', hue='who')
+plt.savefig('survived_age_barplot.png')
+plt.show()
+# countplot for class with hue as who
+sns.countplot(data=df, x='class', hue='who')
+plt.savefig('class_countplot.png')
+plt.show()
+# boxplot for age
+sns.boxplot(data=df, y='age', x='survived', hue='who')
+plt.savefig('age_boxplot.png')
+plt.show()
+# scattar plot for age and fare
+sns.scatterplot(data=df, x='age', y='fare',hue='pclass')
+plt.ylim(0, 250)  # limit y-axis for better visibility
+plt.savefig('age_fare_scatterplot.png')
+plt.show()
+# pairplot for numerical columns
+
+sns.pairplot(df, hue='who', vars=['age', 'fare', 'pclass'])
+plt.savefig('pairplot.png')
+plt.show()
+
+plt.figure(figsize=(10, 8))
+
+# Select only numeric columns
+numeric_df = df.select_dtypes(include=['number'])
+
+# Compute correlation
+corr = numeric_df.corr()
+
+# Plot heatmap
+sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', square=True)
+plt.title('Correlation Heatmap')
+plt.savefig('correlation_heatmap.png')
+plt.show()
+
